@@ -11,8 +11,8 @@
             {
                 if (prediction.Label == "person") persons++;
                 Console.WriteLine("Persona Detectada. Confianza: " + prediction.Confidence);
+                Console.WriteLine("");
             }
-            Console.WriteLine("");
             Console.WriteLine("Personas: " + persons);
         }
     }
