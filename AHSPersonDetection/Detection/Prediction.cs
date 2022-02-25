@@ -4,16 +4,19 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Microsoft.ML.OnnxRuntime;
 
-namespace AHSPersonDetection
+namespace AHSPersonDetection.Detection
 {
     public class Prediction
     {
         public string? Label { get; set; }
         public float Confidence { get; set; }
 
-        public static List<Prediction> GetPredictions(string imageFilePath)
+        public static List<Prediction> GetPredictions(string imageName)
         {
-            string modelFilePath = "D:/Code Projects/C#/AHSPersonDetection/AHSPersonDetection/Assets/Model/FasterRCNN-10.onnx";
+            string assetsPath = GetAbsolutePath(@"../../../Detection/Assets");
+            string modelFilePath = Path.Combine(assetsPath, "Model", "FasterRCNN-10.onnx");
+            string imageFilePath = Path.Combine(assetsPath, "Input", imageName);
+
 
             using Image<Rgb24> image = Image.Load<Rgb24>(imageFilePath);
 
@@ -72,7 +75,17 @@ namespace AHSPersonDetection
             return predictions;
         }
 
+        public static string GetAbsolutePath(string relativePath)
+        {
+            FileInfo _dataRoot = new FileInfo(typeof(Program).Assembly.Location);
+            string assemblyFolderPath = _dataRoot.Directory.FullName;
+
+            string fullPath = Path.Combine(assemblyFolderPath, relativePath);
+
+            return fullPath;
+        }
+
     }
 
-    
+
 }
