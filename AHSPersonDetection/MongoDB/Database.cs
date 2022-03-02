@@ -19,7 +19,7 @@ namespace AHSPersonDetection.MongoDB
         {
             IMongoCollection<AHyS>? collection = database?.GetCollection<AHyS>("AHyS");
 
-            AHyS ahs = new() { MonthAndYear = "02/2022", Hour = "10:15", MonthDay = "25", ImageUrl = "urlTest", PlaceName = "UTNG" };
+            AHyS ahs = new() { MonthAndYear = "03/2022", monthRecord = new MonthRecord() { Place = "Plaza", placeRecords = new PlaceRecords() { MonthDay = 1, dayRecords = new DayRecords() { Hour = "23:35", Date = "01/03/2022" , PeopleQuantity = 10, ImageUrl = "exampleImageUrle" } } } };
             collection?.InsertOne(ahs);
         }
     }
