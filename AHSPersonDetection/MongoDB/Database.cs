@@ -17,10 +17,11 @@ namespace AHSPersonDetection.MongoDB
 
         public void Test()
         {
-            IMongoCollection<AHyS>? collection = database?.GetCollection<AHyS>("AHyS");
+            IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("test");
 
-            AHyS ahs = new() { MonthAndYear = "03/2022", monthRecord = new MonthRecord() { Place = "Plaza", placeRecords = new PlaceRecords() { MonthDay = 1, dayRecords = new DayRecords() { Hour = "23:35", Date = "01/03/2022" , PeopleQuantity = 10, ImageUrl = "exampleImageUrle" } } } };
-            collection?.InsertOne(ahs);
+            AHyS registro = new AHyS() { MonthAndYear = "03/2022", monthRecord = new MonthRecord() { Place = "Plaza" }, placeRecords = new PlaceRecords() { MonthDay = 2 }, dayRecords = new DayRecords() { Date = "02/03/2022", Hour = "15:04", ImageUrl = "testUrl", PeopleQuantity = 10 } };
+
+            collection?.InsertOne(new BsonDocument(registro.ToBSON()));
         }
     }
 }
