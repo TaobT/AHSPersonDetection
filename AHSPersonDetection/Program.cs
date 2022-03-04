@@ -1,5 +1,7 @@
 ﻿using AHSPersonDetection.Detection;
 using AHSPersonDetection.MongoDB;
+using AHSPersonDetection.MongoDB.Models;
+using AHSPersonDetection.Utils;
 
 namespace AHSPersonDetection
 {
@@ -9,7 +11,13 @@ namespace AHSPersonDetection
         {
             Database database = new Database();
             database.Connect();
-            database.Test();
+            List<InputData> unprocessedData = database.GetUnprocessedData();
+
+            int index = 0;
+            foreach(InputData input in unprocessedData)
+            {
+                Image.DownloadImage(input.ImageUrl, Path.Combine(@"../../../Detection/Assets", "Input/") + $"image{index++}.jpg");
+            }
             
 
             //Console.WriteLine("Contando personas...");

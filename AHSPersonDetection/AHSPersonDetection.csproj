@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AltoHttp" Version="1.5.2" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.10.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.14.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
