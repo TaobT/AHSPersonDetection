@@ -1,14 +1,14 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
 
 namespace AHSPersonDetection.MongoDB.Models
 {
     public class InputData
     {
-        public string? Place { get; set; }
-        public string? Date { get; set; }
-        public string? Hour { get; set; }
-        public string ImageUrl { get; set; }
-        public bool Processed { get; set; } //IsProcessed
+        public ObjectId Id;
+        public ObjectId ID_Local;
+        public string Fecha;
+        public string UrlImagen;
+        public bool Procesada;
 
     }
 }

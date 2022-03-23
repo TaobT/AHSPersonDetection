@@ -4,18 +4,18 @@ using AHSPersonDetection.MongoDB.Models;
 
 namespace AHSPersonDetection.MongoDB
 {
-    internal class Database
+    internal static class Database
     {
-        public IMongoDatabase? database;
-        public void Connect()
+        public static IMongoDatabase? database;
+        public static void Connect()
         {
             Console.WriteLine("Connecting to the Database...");
             try
             {
-                var settings = MongoClientSettings.FromConnectionString("mongodb+srv://ahsBDapp:4glomeraci0nHS@cluster0.scapg.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
+                var settings = MongoClientSettings.FromConnectionString("mongodb+srv://ahs:ahsapp@ahs.z0i9i.mongodb.net/AHS?retryWrites=true&w=majority");
                 settings.ServerApi = new ServerApi(ServerApiVersion.V1);
                 var client = new MongoClient(settings);
-                database = client.GetDatabase("AHSDatabase");
+                database = client.GetDatabase("AHS");
             }
             catch (Exception ex)
             {
@@ -27,28 +27,33 @@ namespace AHSPersonDetection.MongoDB
             }
         }
 
-        public void Test()
-        {
-            IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("AHyS");
+        //public void Test()
+        //{
+        //    IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("AHyS");
 
-            AHyS registro = new AHyS() { MonthAndYear = "03/2022", monthRecord = new MonthRecord() { Place = "Plaza" }, placeRecords = new PlaceRecords() { MonthDay = 2 }, dayRecords = new DayRecords() { Date = "02/03/2022", Hour = "15:04", ImageUrl = "testUrl", PeopleQuantity = 10 } };
+        //    AHyS registro = new AHyS() { MonthAndYear = "03/2022", monthRecord = new MonthRecord() { Place = "Plaza" }, placeRecords = new PlaceRecords() { MonthDay = 2 }, dayRecords = new DayRecords() { Date = "02/03/2022", Hour = "15:04", ImageUrl = "testUrl", PeopleQuantity = 10 } };
 
-            collection?.InsertOne(new BsonDocument(registro.ToBSON()));
-        }
+        //    collection?.InsertOne(new BsonDocument(registro.ToBSON()));
+        //}
 
-        public List<InputData> GetUnprocessedData()
+        public static List<InputData> GetUnprocessedData()
         {
             IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("InputData");
 
             List<InputData> inputDatas = new List<InputData>();
 
-            var results = collection.Find(x => x["placeRecords"]["processed"] == false).ToList();
+            var results = collection.Find(x => x["Procesada"] == false).Limit(20).ToList();
             int index = 0;
+
+            var filter = Builders<BsonDocument>.Filter.Eq("Procesada", false);
+            var update = Builders<BsonDocument>.Update.Set("Procesada", true);
+
             foreach(BsonDocument result in results)
             {
-                inputDatas.Add(new InputData() { ImageUrl = result["placeRecords"][index++]["imageUrl"].ToString() });
+                collection.UpdateOne(filter, update);
+                inputDatas.Add(new InputData() {Id = (ObjectId) result["_id"] ,ID_Local = (ObjectId) result["ID_Local"], Fecha = result["Fecha"].ToString(), UrlImagen = result["UrlImagen"].ToString(), Procesada = result["Procesada"].ToBoolean() });
             }
-
+            if (inputDatas.Count <= 0) Console.WriteLine("No unprocessed in collection!");
             return inputDatas;
         }
     }
