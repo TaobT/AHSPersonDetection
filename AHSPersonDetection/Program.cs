@@ -16,18 +16,19 @@
 
         private static void MainThread()
         {
-            Console.WriteLine($"Main thread started. Running at {Constants.TICKS_PER_SEC} ticks per second.");
+            Console.WriteLine($"Main thread started. Running at 1 tick every 30 seconds.");
             DateTime _nextLoop = DateTime.Now;
 
 
             while (isRunning)
             {
 
-                AHSProcess.AddUnprocessedData();
+                AHSProcess.AddNewData();
                 AHSProcess.DownloadImages();
+                AHSProcess.ScanImages();
                 AHSProcess.SendProcessedDataToDatabase();
 
-                _nextLoop = _nextLoop.AddMinutes(Constants.MS_PER_TICK);
+                _nextLoop = _nextLoop.AddSeconds(Constants.MS_PER_TICK);
 
                 if(_nextLoop > DateTime.Now)
                 {

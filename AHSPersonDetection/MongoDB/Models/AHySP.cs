@@ -1,9 +1,12 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AHSPersonDetection.MongoDB.Models
 {
-    public class AHyS
+    public class AHySP
     {
         public int ID_Entrada;
         public int ID_Lugar;
@@ -11,6 +14,6 @@ namespace AHSPersonDetection.MongoDB.Models
         public DateTime Fecha;
         public int CantidadPersonas;
         public string UrlImagen;
+        public string? DirImagen; // Variable solo para escaneo
     }
-
 }

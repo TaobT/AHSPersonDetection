@@ -12,7 +12,7 @@ namespace AHSPersonDetection.MongoDB
             Console.WriteLine("Connecting to the Database...");
             try
             {
-                var settings = MongoClientSettings.FromConnectionString("mongodb+srv://ahs:ahsapp@ahs.z0i9i.mongodb.net/AHS?retryWrites=true&w=majority");
+                var settings = MongoClientSettings.FromConnectionString("mongodb://localhost:27017");
                 settings.ServerApi = new ServerApi(ServerApiVersion.V1);
                 var client = new MongoClient(settings);
                 database = client.GetDatabase("AHS");
@@ -38,7 +38,7 @@ namespace AHSPersonDetection.MongoDB
 
         public static List<InputData> GetUnprocessedData()
         {
-            IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("InputData");
+            IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("datoentradas");
 
             List<InputData> inputDatas = new List<InputData>();
 
@@ -51,10 +51,27 @@ namespace AHSPersonDetection.MongoDB
             foreach(BsonDocument result in results)
             {
                 collection.UpdateOne(filter, update);
-                inputDatas.Add(new InputData() {Id = (ObjectId) result["_id"] ,ID_Local = (ObjectId) result["ID_Local"], Fecha = result["Fecha"].ToString(), UrlImagen = result["UrlImagen"].ToString(), Procesada = result["Procesada"].ToBoolean() });
+                try
+                {
+                    inputDatas.Add(new InputData() {ID_Entrada = (int) result["ID_Entrada"] ,ID_Lugar = (int) result["ID_Lugar"], Fecha = (DateTime) result["Fecha"], UrlImagen = result["UrlImagen"].ToString(), Procesada = result["Procesada"].ToBoolean() });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
             }
             if (inputDatas.Count <= 0) Console.WriteLine("No unprocessed in collection!");
             return inputDatas;
+        }
+
+        public static string GetLugar(int idLugar)
+        {
+            IMongoCollection<BsonDocument>? collection = database?.GetCollection<BsonDocument>("lugares");
+
+            var results = collection.Find(x => x["ID_Lugar"] == idLugar).ToList();
+
+            if (results.Count <= 0) return "";
+            return results[0]["Nombre"].ToString();
         }
     }
 }
